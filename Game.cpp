@@ -183,13 +183,13 @@ void Game::RunRenderer()
 	if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_BUTTON(SDL_BUTTON_LEFT) && gameEvent->button.state == SDL_PRESSED)
 	{
 		if (mouseX > NewGameButtonLoc.x && mouseX < NewGameButtonLoc.w + NewGameButtonLoc.x)
-			if (mouseY > 600 && mouseY < NewGameButton.getHeight() + 600)
+			if (mouseY > NewGameButtonLoc.y && mouseY < NewGameButton.getHeight() + NewGameButtonLoc.y)
 				NewGameButtonPressed.render(NewGameButtonLoc.x, NewGameButtonLoc.y, NULL);
 	}
 
 	if (mouseX > NewGameButtonLoc.x && mouseX < NewGameButtonLoc.w + NewGameButtonLoc.x)
 	{
-		if (mouseY > 600 && mouseY < NewGameButton.getHeight() + 600)
+		if (mouseY > NewGameButtonLoc.y && mouseY < NewGameButton.getHeight() + NewGameButtonLoc.y)
 		{
 			ButtonHover.render(NewGameButtonLoc.x, NewGameButtonLoc.y, NULL);
 		}
