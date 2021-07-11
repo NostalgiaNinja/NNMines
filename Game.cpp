@@ -307,14 +307,6 @@ void Game::RunEvents()
 		ResetGame();
 	}
 
-	//0 autofill check
-	AutoFillCheck();
-
-	//failure check
-	FailureCheck();
-
-	//Success check
-	Success();
 
 	if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_BUTTON(SDL_BUTTON_LEFT) && gameEvent->button.state == SDL_PRESSED)
 	{
@@ -340,6 +332,20 @@ void Game::RunEvents()
 	}
 
 }
+
+void Game::Update()
+{
+	//0 autofill check
+	AutoFillCheck();
+
+	//failure check
+	FailureCheck();
+
+	//Success check
+	Success();
+
+}
+
 
 void Game::OpenCells()
 {

@@ -47,6 +47,7 @@ public:
 	void LoadObjects();
 	void RunRenderer();
 	void RunEvents();
+	void Update();
 
 	//game logic
 	void OpenCells();
