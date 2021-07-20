@@ -149,6 +149,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="LoadTex.h" />
     <ClInclude Include="LoadTimer.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="StateMachines.h" />
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +157,12 @@
     <ClCompile Include="LoadTex.cpp" />
     <ClCompile Include="LoadTimer.cpp" />
     <ClCompile Include="Main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Mines_GameLogic.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
