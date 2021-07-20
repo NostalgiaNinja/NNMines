@@ -36,6 +36,7 @@ public:
 	~Game();
 
 	//game generation
+	void GenerateBoard();
 	void GenerateMines();
 	void GenerateNumbers();
 
@@ -65,8 +66,8 @@ private:
 	int TotalMines;
 	int FlaggedCount;
 	
-	//TODO: Static size of cell, but should change it to a dynamic array.
-	Cell gameBoard[30][16];
+	//vector of vectors based off of gridsizeX, gridsizeY
+	std::vector<std::vector<Cell>> gameBoard;
 
 	//game specific variables
 	bool fail;

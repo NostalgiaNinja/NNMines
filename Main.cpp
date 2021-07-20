@@ -84,8 +84,6 @@ int main(int args, char* argv[])
 			}
 		}
 
-		//v1.1 - update method split from event(update)
-
 		game.Update();
 
 		SDL_SetRenderDrawColor(mainRenderer, 0x00, 0x00, 0x00, 0xff);

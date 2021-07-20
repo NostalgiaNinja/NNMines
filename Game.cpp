@@ -2,6 +2,15 @@
 #include <iostream>
 #include <string>
 
+void Game::GenerateBoard()
+{
+	gameBoard.resize(gridSizeX);
+	for (int i = 0; i < gridSizeX; i++)
+	{
+		gameBoard[i].resize(gridSizeY);
+	}
+}
+
 void Game::GenerateMines()
 {
 	//check the amount of Total Mines to generate, and place them into the grid using random generation.
@@ -335,15 +344,17 @@ void Game::RunEvents()
 
 void Game::Update()
 {
-	//0 autofill check
-	AutoFillCheck();
+	if (!firstClick)
+	{
+		//0 autofill check
+		AutoFillCheck();
 
-	//failure check
-	FailureCheck();
+		//failure check
+		FailureCheck();
 
-	//Success check
-	Success();
-
+		//Success check
+		Success();
+	}
 }
 
 
@@ -606,6 +617,8 @@ Game::Game()
 	gridSizeY = 16;
 	TotalMines = 99;
 	FlaggedCount = 0;
+
+	GenerateBoard();
 
 	//game specific variables
 	fail = false;
