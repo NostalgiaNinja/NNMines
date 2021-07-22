@@ -27,6 +27,13 @@ private:
 	int MineCount;
 };
 
+enum Difficulty : int
+{
+	EASY,
+	NORMAL,
+	HARD
+};
+
 class Game
 {
 
@@ -39,6 +46,8 @@ public:
 	void GenerateBoard();
 	void GenerateMines();
 	void GenerateNumbers();
+
+	void SetDifficulty();
 
 	// renderer/event stuff
 	void SelectRenderer(SDL_Renderer &renderer);
@@ -59,6 +68,9 @@ public:
 	void FailureCheck();
 	void Success();
 
+	bool optionsSelected;
+	Difficulty gameDifficulty;
+
 private:
 	//Minesweeper board
 	int gridSizeX;
@@ -73,6 +85,8 @@ private:
 	bool fail;
 	bool win;
 	bool firstClick;
+
+
 
 	//Required stuff to get renderer and game functions going.
 	//gameRenderer: Which renderer to render to? getRenderer will ask where to output this data on initialization.
@@ -92,6 +106,9 @@ private:
 	Sprite NewGameButton;
 	Sprite NewGameButtonPressed;
 	Sprite ButtonHover;
+	Sprite OptionsButton;
+	Sprite OptionsPressed;
+	Sprite OptionsHover;
 	Sprite UI;
 	
 	//Font - OFL-Licensed Press Start 2P
@@ -104,5 +121,6 @@ private:
 
 	//TODO: in Sprite class, make a tex_location so that Cell Location and button location don't have to be manually done.
 	SDL_Rect NewGameButtonLoc;
+	SDL_Rect OptionsButtonLoc;
 	SDL_Rect UILoc;
 };

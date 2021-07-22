@@ -153,6 +153,15 @@ void Game::LoadObjects()
 	NewGameButtonPressed.loadRenderer(*gameRenderer);
 	NewGameButtonPressed.LoadFromFile("textures/Button_Pressed.png");
 
+	OptionsButton.loadRenderer(*gameRenderer);
+	OptionsButton.LoadFromFile("textures/Options_Button.png");
+
+	OptionsHover.loadRenderer(*gameRenderer);
+	OptionsHover.LoadFromFile("textures/Options_Hover.png");
+
+	OptionsPressed.loadRenderer(*gameRenderer);
+	OptionsPressed.LoadFromFile("textures/Options_Pressed.png");
+
 	gameFont = TTF_OpenFont("fonts/PressStart2P.ttf", 8);
 	fntMinesLeft.loadRenderer(*gameRenderer);
 	fntTime.loadRenderer(*gameRenderer);
@@ -188,12 +197,17 @@ void Game::RunRenderer()
 
 	//UI - Buttons
 	NewGameButton.render(NewGameButtonLoc.x, NewGameButtonLoc.y, NULL);
+	OptionsButton.render(OptionsButtonLoc.x, OptionsButtonLoc.y, NULL);
 
 	if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_BUTTON(SDL_BUTTON_LEFT) && gameEvent->button.state == SDL_PRESSED)
 	{
 		if (mouseX > NewGameButtonLoc.x && mouseX < NewGameButtonLoc.w + NewGameButtonLoc.x)
-			if (mouseY > NewGameButtonLoc.y && mouseY < NewGameButton.getHeight() + NewGameButtonLoc.y)
+			if (mouseY > NewGameButtonLoc.y && mouseY < NewGameButtonLoc.h + NewGameButtonLoc.y)
 				NewGameButtonPressed.render(NewGameButtonLoc.x, NewGameButtonLoc.y, NULL);
+
+		if (mouseX > OptionsButtonLoc.x && mouseX < OptionsButtonLoc.w + OptionsButtonLoc.x)
+			if (mouseY > OptionsButtonLoc.y && mouseY < OptionsButtonLoc.h + OptionsButtonLoc.y)
+				OptionsPressed.render(OptionsButtonLoc.x, OptionsButtonLoc.y, NULL);
 	}
 
 	if (mouseX > NewGameButtonLoc.x && mouseX < NewGameButtonLoc.w + NewGameButtonLoc.x)
@@ -203,6 +217,10 @@ void Game::RunRenderer()
 			ButtonHover.render(NewGameButtonLoc.x, NewGameButtonLoc.y, NULL);
 		}
 	}
+
+	if (mouseX > OptionsButtonLoc.x && mouseX < OptionsButtonLoc.w + OptionsButtonLoc.x)
+		if (mouseY > OptionsButtonLoc.y && mouseY < OptionsButtonLoc.h + OptionsButtonLoc.y)
+			OptionsHover.render(OptionsButtonLoc.x, OptionsButtonLoc.y, NULL);
 
 	//Minesweeper grid
 	for (int i = 0; i < gridSizeX; i++)
@@ -308,26 +326,38 @@ void Game::RunRenderer()
 
 void Game::RunEvents()
 {
-	//keyboard event - F2 - New Game
-	const Uint8* KeyState = SDL_GetKeyboardState(NULL);
-
-	if (KeyState[SDL_SCANCODE_F2])
+	if (!optionsSelected)
 	{
-		ResetGame();
-	}
+		//keyboard event - F2 - New Game
+		const Uint8* KeyState = SDL_GetKeyboardState(NULL);
 
-
-	if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_BUTTON(SDL_BUTTON_LEFT) && gameEvent->button.state == SDL_PRESSED)
-	{
-		OpenCells();
-
-		if (mouseX > NewGameButtonLoc.x && mouseX < NewGameButtonLoc.w + NewGameButtonLoc.x)
+		if (KeyState[SDL_SCANCODE_F2])
 		{
-			if (mouseY > NewGameButtonLoc.y && mouseY < NewGameButtonLoc.h + NewGameButtonLoc.y)
+			ResetGame();
+		}
+
+
+		if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_BUTTON(SDL_BUTTON_LEFT) && gameEvent->button.state == SDL_PRESSED)
+		{
+			OpenCells();
+
+			if (mouseX > NewGameButtonLoc.x && mouseX < NewGameButtonLoc.w + NewGameButtonLoc.x)
 			{
-				ResetGame();
+				if (mouseY > NewGameButtonLoc.y && mouseY < NewGameButtonLoc.h + NewGameButtonLoc.y)
+				{
+					ResetGame();
+				}
+			}
+
+			if (mouseX > OptionsButtonLoc.x && mouseX < OptionsButtonLoc.w + OptionsButtonLoc.x)
+			{
+				if (mouseY > OptionsButtonLoc.y && mouseY < OptionsButtonLoc.h + OptionsButtonLoc.y)
+				{
+					optionsSelected = true;
+				}
 			}
 		}
+
 	}
 
 	if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_BUTTON(SDL_BUTTON_RIGHT) && gameEvent->button.state == SDL_PRESSED)
@@ -453,70 +483,71 @@ void Game::ChordCells()
 					{
 						if (gameBoard[i][j].checkOpened())
 						{
-							if (i != 0 && j != 0)
+							if (i > 0 && j > 0)
 								if (gameBoard[i - 1][j - 1].checkFlagged())
 									flaggedCells++;
 
-							if (i != 0)
+							if (i > 0)
 								if (gameBoard[i - 1][j].checkFlagged())
 									flaggedCells++;
 
-							if (i!= 0 && j != gridSizeY - 1)
+							if (i > 0 && j < gridSizeY - 1)
 								if (gameBoard[i - 1][j + 1].checkFlagged())
 									flaggedCells++;
 
-							if (j != 0)
+							if (j > 0)
 								if (gameBoard[i][j - 1].checkFlagged())
 									flaggedCells++;
 							
-							if (j != gridSizeY - 1)
+							if (j < gridSizeY)
 								if (gameBoard[i][j + 1].checkFlagged())
 									flaggedCells++;
 
-							if (i != gridSizeX - 1 && j != 0)
+							if (i < gridSizeX - 1 && j > 0)
 								if (gameBoard[i + 1][j - 1].checkFlagged())
 									flaggedCells++;
 
-							if (i != gridSizeX - 1)
+							if (i < gridSizeX - 1)
 								if (gameBoard[i + 1][j].checkFlagged())
 									flaggedCells++;
 
-							if (i != gridSizeX - 1 && j != gridSizeY - 1)
+							if (i < gridSizeX - 1 && j < gridSizeY - 1)
 								if (gameBoard[i + 1][j + 1].checkFlagged())
 									flaggedCells++;
 
 							if (gameBoard[i][j].ReadMineCount() == flaggedCells)
 							{
-								if (i != 0 && j != 0)
+								if (i > 0 && j > 0)
 									if (!gameBoard[i - 1][j - 1].checkFlagged() && !gameBoard[i - 1][j - 1].checkOpened())
 										gameBoard[i - 1][j - 1].setOpened();
-								if (i != 0)
-								{
+
+								if (i > 0)
 									if (!gameBoard[i - 1][j].checkFlagged() && !gameBoard[i - 1][j].checkOpened())
 										gameBoard[i - 1][j].setOpened();
 
-									if (j != gridSizeY - 1)
-									{
-										if (!gameBoard[i - 1][j + 1].checkFlagged() && !gameBoard[i - 1][j + 1].checkOpened())
-											gameBoard[i - 1][j + 1].setOpened();
-									}
-								}
-								if (j != 0)
-								{
+								if (i > 0 && j < gridSizeY)
+									if (!gameBoard[i - 1][j + 1].checkFlagged() && !gameBoard[i - 1][j + 1].checkOpened())
+										gameBoard[i - 1][j + 1].setOpened();
+
+								if (j > 0)
 									if (!gameBoard[i][j - 1].checkFlagged() && !gameBoard[i][j - 1].checkOpened())
 										gameBoard[i][j - 1].setOpened();
-									if (!gameBoard[i + 1][j - 1].checkFlagged() && !gameBoard[i + 1][j - 1].checkOpened())
-										gameBoard[i + 1][j - 1].setOpened();
-								}
-								if (j != gridSizeY - 1)
-								{
+								
+								if (j < gridSizeY)
 									if (!gameBoard[i][j + 1].checkFlagged() && !gameBoard[i][j + 1].checkOpened())
 										gameBoard[i][j + 1].setOpened();
+
+								if (i < gridSizeX - 1 && j > 0)
+									if (!gameBoard[i + 1][j - 1].checkFlagged() && !gameBoard[i + 1][j - 1].checkOpened())
+										gameBoard[i + 1][j - 1].setOpened();
+
+								if (i < gridSizeX - 1)
+									if (!gameBoard[i + 1][j].checkFlagged() && !gameBoard[i + 1][j].checkOpened())
+										gameBoard[i + 1][j].setOpened();
+
+								if (i < gridSizeX - 1 && j < gridSizeY - 1)
 									if (!gameBoard[i + 1][j + 1].checkFlagged() && !gameBoard[i + 1][j + 1].checkOpened())
 										gameBoard[i + 1][j + 1].setOpened();
-								}
-								if (!gameBoard[i + 1][j].checkFlagged() && !gameBoard[i + 1][j].checkOpened())
-									gameBoard[i + 1][j].setOpened();
 							}
 						}
 					}
@@ -557,7 +588,7 @@ void Game::Success()
 	}
 	if (CountedCorrect == TotalMines && win == false)
 	{
-		gameTime.stop();
+		gameTime.pause();
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "CONGRATULATIONS!", "YOU WON!", NULL);
 
 		win = true;
@@ -594,7 +625,7 @@ void Game::AutoFillCheck()
 }
 
 void Game::ResetGame()
-{
+{	
 	//reset every cell
 	for (int i = 0; i < gridSizeX; i++)
 	{
@@ -604,33 +635,63 @@ void Game::ResetGame()
 		}
 	}
 
+	SetDifficulty();
 	fail = false;
 	win = false;
 	firstClick = true;
 	FlaggedCount = 0;
 }
 
+void Game::SetDifficulty()
+{
+	switch (gameDifficulty)
+	{
+	case EASY:
+		gridSizeX = 8;
+		gridSizeY = 8;
+		TotalMines = 10;
+		break;
+
+	case NORMAL:
+		gridSizeX = 16;
+		gridSizeY = 16;
+		TotalMines = 40;
+		break;
+
+	case HARD:
+		gridSizeX = 30;
+		gridSizeY = 16;
+		TotalMines = 99;
+		break;
+	default:
+		break;
+	}
+
+	GenerateBoard();
+}
+
 Game::Game()
 {
 	//note these are initial Expert grid sizes - Make dynamic later.
-	gridSizeX = 30;
-	gridSizeY = 16;
-	TotalMines = 99;
+	gridSizeX = 0;
+	gridSizeY = 0;
+	TotalMines = 0;
 	FlaggedCount = 0;
-
-	GenerateBoard();
 
 	//game specific variables
 	fail = false;
 	win = false;
 	firstClick = true;
+	optionsSelected = false;
+	gameDifficulty = Difficulty::EASY;
 
 	//which renderer to point to
 	gameRenderer = nullptr;
 	gameEvent = nullptr;
 
 	//UI
-	NewGameButtonLoc = { 185, 20, 128, 32 };
+	NewGameButtonLoc = { 185, 20, 48, 32 };
+	OptionsButtonLoc = { 240, 20, 64, 32 };
 	UILoc = { 50, 10, 128, 64 };
 
 	gameFont = nullptr;
@@ -638,13 +699,14 @@ Game::Game()
 
 Game::~Game()
 {
-	gridSizeX = 0;
-	gridSizeY = 0;
-	TotalMines = 0;
+	gridSizeX = 8;
+	gridSizeY = 8;
+	TotalMines = 10;
 	FlaggedCount = 0;
 
 	//UI
-	NewGameButtonLoc = { 0,0,0,0};
+	NewGameButtonLoc = { 0, 0, 0, 0 };
+	OptionsButtonLoc = { 0, 0, 0, 0 };
 	gameFont = nullptr;
 }
 
@@ -655,6 +717,7 @@ Cell::Cell()
 	isFlagged = false;
 	MineCount = 0;
 	CellLocation = { 0,0,0,0 };
+
 }
 
 Cell::~Cell()

@@ -5,6 +5,7 @@
 #include "LoadTex.h"
 #include "LoadTimer.h"
 #include "StateMachines.h"
+#include "Options.h"
 #include "Game.h"
 #include <string>
 
@@ -66,6 +67,14 @@ int main(int args, char* argv[])
 
 	//load objects for renderer
 	game.LoadObjects();
+	game.SetDifficulty();
+
+	Options options;
+
+	options.SelectRenderer(*mainRenderer);
+	options.selectEventSystem(ev);
+
+	options.LoadObjects();
 
 	SDL_Rect frameDebugger = { 20, screenHeight - 50, 32, 32 };
 
@@ -80,18 +89,61 @@ int main(int args, char* argv[])
 			}
 			else
 			{
-				game.RunEvents();
+				if (state == APPSTATE::GAME)
+					game.RunEvents();
+
+				if (state == APPSTATE::OPTIONS)
+					options.RunEvents();
 			}
 		}
-
-		game.Update();
+		
 
 		SDL_SetRenderDrawColor(mainRenderer, 0x00, 0x00, 0x00, 0xff);
 		SDL_RenderClear(mainRenderer);
 
+		if (game.optionsSelected == true)
+		{
+			state = APPSTATE::OPTIONS;
+		}
+
 		if (state == APPSTATE::GAME)
 		{
+			game.Update(); 
 			game.RunRenderer();
+		}
+
+		if (state == APPSTATE::OPTIONS)
+		{
+			game.RunRenderer();
+			options.RunRenderer();
+		}
+
+		if (options.done == true)
+		{
+			state = APPSTATE::GAME;
+			game.optionsSelected = false;
+
+			if (options.diff == 1)
+			{
+				game.gameDifficulty = Difficulty::EASY;
+			}
+			if (options.diff == 2)
+			{
+				game.gameDifficulty = Difficulty::NORMAL;
+			}
+			if (options.diff == 3)
+			{
+				game.gameDifficulty = Difficulty::HARD;
+			}
+			game.ResetGame();
+			options.done = false;
+		}
+
+		if (options.cancelled == true)
+		{
+			state = APPSTATE::GAME;
+			game.optionsSelected = false;
+			options.cancelled = false;
 		}
 
 		SDL_RenderPresent(mainRenderer);
