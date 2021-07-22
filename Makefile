@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = Main.cpp LoadTex.cpp LoadTimer.cpp Game.cpp
+OBJS = Main.cpp LoadTex.cpp LoadTimer.cpp Game.cpp Options.cpp
 
 #CC specifies the compiler
 # -w ignores warnings
