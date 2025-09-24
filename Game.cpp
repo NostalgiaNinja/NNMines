@@ -499,7 +499,7 @@ void Game::ChordCells()
 								if (gameBoard[i][j - 1].checkFlagged())
 									flaggedCells++;
 							
-							if (j < gridSizeY)
+							if (j < gridSizeY - 1)
 								if (gameBoard[i][j + 1].checkFlagged())
 									flaggedCells++;
 
@@ -525,9 +525,38 @@ void Game::ChordCells()
 									if (!gameBoard[i - 1][j].checkFlagged() && !gameBoard[i - 1][j].checkOpened())
 										gameBoard[i - 1][j].setOpened();
 
-								if (i > 0 && j < gridSizeY)
+								if (i > 0 && j < gridSizeY - 1)
 									if (!gameBoard[i - 1][j + 1].checkFlagged() && !gameBoard[i - 1][j + 1].checkOpened())
 										gameBoard[i - 1][j + 1].setOpened();
+
+								if (j > 0)
+									if (!gameBoard[i][j - 1].checkFlagged() && !gameBoard[i][j - 1].checkOpened())
+										gameBoard[i][j - 1].setOpened();
+								
+								if (j < gridSizeY - 1)
+									if (!gameBoard[i][j + 1].checkFlagged() && !gameBoard[i][j + 1].checkOpened())
+										gameBoard[i][j + 1].setOpened();
+
+								if (i < gridSizeX - 1 && j > 0)
+									if (!gameBoard[i + 1][j - 1].checkFlagged() && !gameBoard[i + 1][j - 1].checkOpened())
+										gameBoard[i + 1][j - 1].setOpened();
+
+								if (i < gridSizeX - 1)
+									if (!gameBoard[i + 1][j].checkFlagged() && !gameBoard[i + 1][j].checkOpened())
+										gameBoard[i + 1][j].setOpened();
+
+								if (i < gridSizeX - 1 && j < gridSizeY - 1)
+									if (!gameBoard[i + 1][j + 1].checkFlagged() && !gameBoard[i + 1][j + 1].checkOpened())
+										gameBoard[i + 1][j + 1].setOpened();
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 
 								if (j > 0)
 									if (!gameBoard[i][j - 1].checkFlagged() && !gameBoard[i][j - 1].checkOpened())
