@@ -586,6 +586,9 @@ void Game::Success()
 			}
 		}
 	}
+	//Overflag Protection
+	if ((TotalMines - FlaggedCount) < 0)
+		return;
 	if (CountedCorrect == TotalMines && win == false)
 	{
 		gameTime.pause();
