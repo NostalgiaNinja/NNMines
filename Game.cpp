@@ -557,35 +557,6 @@ void Game::ChordCells()
 	}
 }
 
-
-								if (j > 0)
-									if (!gameBoard[i][j - 1].checkFlagged() && !gameBoard[i][j - 1].checkOpened())
-										gameBoard[i][j - 1].setOpened();
-								
-								if (j < gridSizeY)
-									if (!gameBoard[i][j + 1].checkFlagged() && !gameBoard[i][j + 1].checkOpened())
-										gameBoard[i][j + 1].setOpened();
-
-								if (i < gridSizeX - 1 && j > 0)
-									if (!gameBoard[i + 1][j - 1].checkFlagged() && !gameBoard[i + 1][j - 1].checkOpened())
-										gameBoard[i + 1][j - 1].setOpened();
-
-								if (i < gridSizeX - 1)
-									if (!gameBoard[i + 1][j].checkFlagged() && !gameBoard[i + 1][j].checkOpened())
-										gameBoard[i + 1][j].setOpened();
-
-								if (i < gridSizeX - 1 && j < gridSizeY - 1)
-									if (!gameBoard[i + 1][j + 1].checkFlagged() && !gameBoard[i + 1][j + 1].checkOpened())
-										gameBoard[i + 1][j + 1].setOpened();
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
 void Game::FailureCheck()
 {
 	for (int i = 0; i < gridSizeX; i++)
@@ -615,6 +586,9 @@ void Game::Success()
 			}
 		}
 	}
+	//Overflag Protection
+	if ((TotalMines - FlaggedCount) < 0)
+		return;
 	if (CountedCorrect == TotalMines && win == false)
 	{
 		gameTime.pause();
