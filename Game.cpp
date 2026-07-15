@@ -125,6 +125,13 @@ void Game::GenerateNumbers()
 
 }
 
+void Game::getWindowSize()
+{
+	//fix x/y offsets to header file.
+	gameWindowWidth = 50 + (gridSizeX * 32) + 16;
+	gameWindowHeight = 85 + (gridSizeY * 32) + 16;
+}
+
 void Game::SelectRenderer(SDL_Renderer &renderer)
 {
 	gameRenderer = &renderer;

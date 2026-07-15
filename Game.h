@@ -68,8 +68,14 @@ public:
 	void FailureCheck();
 	void Success();
 
+	//Options
 	bool optionsSelected;
 	Difficulty gameDifficulty;
+
+	//get window size information for dynamic resizing in Main.cpp
+	int gameWindowWidth;
+	int gameWindowHeight;
+	void getWindowSize();
 
 private:
 	//Minesweeper board
@@ -85,8 +91,6 @@ private:
 	bool fail;
 	bool win;
 	bool firstClick;
-
-
 
 	//Required stuff to get renderer and game functions going.
 	//gameRenderer: Which renderer to render to? getRenderer will ask where to output this data on initialization.
