@@ -114,7 +114,11 @@ private:
 	Sprite OptionsPressed;
 	Sprite OptionsHover;
 	Sprite UI;
-	
+
+	//Grid offsets
+	int xoffset = 32;
+	int yoffset = 85;
+
 	//Font - OFL-Licensed Press Start 2P
 	TTF_Font* gameFont;
 	Texture fntMinesLeft;

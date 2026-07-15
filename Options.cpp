@@ -102,10 +102,10 @@ Options::Options()
 
 	diff = 1;
 
-	SettingsMenuLoc = { 240, 52, 90, 64 };
-	EasyRadioLoc = { 244, 58, 12, 12 };
-	NormalRadioLoc = { 244, 72, 12, 12 };
-	HardRadioLoc = { 244, 88, 12, 12 };
+	SettingsMenuLoc = { 140, 52, 90, 64 };
+	EasyRadioLoc = { 144, 58, 12, 12 };
+	NormalRadioLoc = { 144, 72, 12, 12 };
+	HardRadioLoc = { 144, 88, 12, 12 };
 
 	done = false;
 	cancelled = false;

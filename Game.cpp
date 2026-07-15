@@ -128,8 +128,8 @@ void Game::GenerateNumbers()
 void Game::getWindowSize()
 {
 	//fix x/y offsets to header file.
-	gameWindowWidth = 50 + (gridSizeX * 32) + 16;
-	gameWindowHeight = 85 + (gridSizeY * 32) + 16;
+	gameWindowWidth = xoffset + (gridSizeX * 32) + xoffset;
+	gameWindowHeight = yoffset + (gridSizeY * 32) + xoffset;
 }
 
 void Game::SelectRenderer(SDL_Renderer &renderer)
@@ -179,10 +179,6 @@ void Game::LoadObjects()
 
 void Game::RunRenderer()
 {
-	
-	// X and Y offset for the grid
-	int xoffset = 50;
-	int yoffset = 85;
 	
 	//mine visual state
 	SDL_Rect CellValues[13];
@@ -346,7 +342,11 @@ void Game::RunEvents()
 
 		if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_BUTTON(SDL_BUTTON_LEFT) && gameEvent->button.state == SDL_PRESSED)
 		{
+			//if not opened or flagged, open the cell
 			OpenCells();
+			//else chord the cell if conditions are met.
+			ChordCells();
+
 
 			if (mouseX > NewGameButtonLoc.x && mouseX < NewGameButtonLoc.w + NewGameButtonLoc.x)
 			{
@@ -371,10 +371,6 @@ void Game::RunEvents()
 	{
 		//flag if not opened.
 		FlagCells();
-
-		//else Chord if opened
-		ChordCells();
-
 	}
 
 }
@@ -472,6 +468,10 @@ void Game::FlagCells()
 	}
 }
 
+void QuickFlag()
+{
+
+}
 
 void Game::ChordCells()
 {
@@ -700,9 +700,9 @@ Game::Game()
 	gameEvent = nullptr;
 
 	//UI
-	NewGameButtonLoc = { 185, 20, 48, 32 };
-	OptionsButtonLoc = { 240, 20, 64, 32 };
-	UILoc = { 50, 10, 128, 64 };
+	NewGameButtonLoc = { xoffset + 150, 20, 48, 32 };
+	OptionsButtonLoc = { xoffset + 200, 20, 64, 32 };
+	UILoc = { xoffset, 10, 128, 64 };
 
 	gameFont = nullptr;
 }
