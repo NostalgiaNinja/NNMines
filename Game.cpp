@@ -528,9 +528,6 @@ void Game::QuickFlag()
 									flagValid++;
 							}
 
-							//debug: Check the amount of valid flagged cells.
-							std::cout << "Valid flagged cells: " << flagValid << std::endl; 
-							std::cout << "What's the cell's current value?: " << gameBoard[i][j].ReadMineCount() << std::endl;
 
 							//compare the cell value with the value of valid cells to flag.
 							if (flagValid == gameBoard[i][j].ReadMineCount())
