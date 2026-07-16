@@ -714,27 +714,42 @@ void Game::FailureCheck()
 
 void Game::Success()
 {
-
+	int emptyCells = 0;
 	int CountedCorrect = 0;
 	for (int i = 0; i < gridSizeX; i++)
 	{
 		for (int j = 0; j < gridSizeY; j++)
 		{
+			//flagged rule
 			if (gameBoard[i][j].checkFlagged() && gameBoard[i][j].CheckMine())
 			{
 				CountedCorrect++;
 			}
+			//check for opened cells so that NF rule can apply.
+			if (!gameBoard[i][j].checkOpened())
+				emptyCells++;
 		}
 	}
 	//Overflag Protection
 	if ((TotalMines - FlaggedCount) < 0)
 		return;
-	if (CountedCorrect == TotalMines && win == false)
+	// Standard rules - All flags have been placed in the correct place.
+	if (CountedCorrect == TotalMines && !win)
 	{
 		gameTime.pause();
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "CONGRATULATIONS!", "YOU WON!", NULL);
 
 		win = true;
+	}
+	// No Flag (NF) rule
+	if (emptyCells == TotalMines && !win)
+	{
+		gameTime.pause();
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "CONGRATULATIONS!", "NO FLAG WIN!", NULL);
+
+		win = true;
+
+		
 	}
 }
 
