@@ -714,6 +714,7 @@ void Game::FailureCheck()
 
 void Game::Success()
 {
+
 	int emptyCells = 0;
 	int CountedCorrect = 0;
 	for (int i = 0; i < gridSizeX; i++)
@@ -745,11 +746,22 @@ void Game::Success()
 	if (emptyCells == TotalMines && !win)
 	{
 		gameTime.pause();
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "CONGRATULATIONS!", "NO FLAG WIN!", NULL);
 
 		win = true;
 
+		for (int i = 0; i < gridSizeX; i++)
+		{
+			for (int j = 0; j < gridSizeY; j++)
+			{
+				if (!gameBoard[i][j].checkOpened() && !gameBoard[i][j].checkFlagged())
+				{
+					gameBoard[i][j].toggleFlagged();
+					FlaggedCount++;
+				}
+			}
+		}
 		
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "CONGRATULATIONS!", "NO FLAG WIN!", NULL);
 	}
 }
 
