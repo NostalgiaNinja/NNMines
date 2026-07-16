@@ -14,6 +14,7 @@ SDL_Renderer* mainRenderer = nullptr;
 int scrWidth = 0;
 int scrHeight = 0;
 
+SDL_Surface* icon = IMG_Load("icon1.ico");
 
 void init()
 {
@@ -22,6 +23,8 @@ void init()
 
 	//init Window system
 	mainWindow = SDL_CreateWindow("NN's Minesweeper Clone", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scrWidth, scrHeight, SDL_WINDOW_SHOWN | SDL_RENDERER_PRESENTVSYNC);
+
+	SDL_SetWindowIcon(mainWindow, icon);
 
 	//init Renderer
 	mainRenderer = SDL_CreateRenderer(mainWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
