@@ -91,6 +91,7 @@ private:
 	//game specific variables
 	bool fail;
 	bool win;
+	bool winlock; //locks win state and prevents an infinite loop.
 	bool firstClick;
 
 	//Required stuff to get renderer and game functions going.

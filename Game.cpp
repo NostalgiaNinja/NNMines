@@ -714,7 +714,6 @@ void Game::FailureCheck()
 
 void Game::Success()
 {
-
 	int emptyCells = 0;
 	int CountedCorrect = 0;
 	for (int i = 0; i < gridSizeX; i++)
@@ -755,11 +754,16 @@ void Game::Success()
 					gameBoard[i][j].toggleFlagged();
 					FlaggedCount++;
 				}
+				if (!gameBoard[i][j].checkOpened() && !gameBoard[i][j].CheckMine())
+					gameBoard[i][j].setOpened();
 			}
 		}
 	}
-	if (win)
+	if (win && !winlock)
+	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "CONGRATULATIONS!", "YOU WON!", NULL);
+		winlock = true;
+	}
 }
 
 void Game::AutoFillCheck()
@@ -805,7 +809,9 @@ void Game::ResetGame()
 	SetDifficulty();
 	fail = false;
 	win = false;
+	winlock = false;
 	firstClick = true;
+	gameTime.stop();
 	FlaggedCount = 0;
 }
 
@@ -839,7 +845,6 @@ void Game::SetDifficulty()
 
 Game::Game()
 {
-	//note these are initial Expert grid sizes - Make dynamic later.
 	gridSizeX = 0;
 	gridSizeY = 0;
 	TotalMines = 0;
@@ -848,6 +853,7 @@ Game::Game()
 	//game specific variables
 	fail = false;
 	win = false;
+	winlock = false;
 	firstClick = true;
 	optionsSelected = false;
 	gameDifficulty = Difficulty::EASY;
@@ -875,6 +881,7 @@ Game::~Game()
 	NewGameButtonLoc = { 0, 0, 0, 0 };
 	OptionsButtonLoc = { 0, 0, 0, 0 };
 	gameFont = nullptr;
+	winlock = false;
 }
 
 Cell::Cell()
