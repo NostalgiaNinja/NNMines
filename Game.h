@@ -63,6 +63,7 @@ public:
 	void OpenCells();
 	void FlagCells();
 	void ChordCells();
+	void QuickFlag();
 	void AutoFillCheck();
 	void ResetGame();
 	void FailureCheck();
