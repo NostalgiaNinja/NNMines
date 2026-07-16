@@ -738,15 +738,12 @@ void Game::Success()
 	if (CountedCorrect == TotalMines && !win)
 	{
 		gameTime.pause();
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "CONGRATULATIONS!", "YOU WON!", NULL);
-
 		win = true;
 	}
 	// No Flag (NF) rule
 	if (emptyCells == TotalMines && !win)
 	{
 		gameTime.pause();
-
 		win = true;
 
 		for (int i = 0; i < gridSizeX; i++)
@@ -760,9 +757,9 @@ void Game::Success()
 				}
 			}
 		}
-		
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "CONGRATULATIONS!", "NO FLAG WIN!", NULL);
 	}
+	if (win)
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "CONGRATULATIONS!", "YOU WON!", NULL);
 }
 
 void Game::AutoFillCheck()
