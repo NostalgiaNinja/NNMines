@@ -15,7 +15,7 @@ void Game::GenerateMines()
 {
 	//check the amount of Total Mines to generate, and place them into the grid using random generation.
 	int minesLeft = TotalMines;
-	
+
 	srand(time(NULL));
 
 	while (minesLeft > 0)
@@ -125,6 +125,13 @@ void Game::GenerateNumbers()
 
 }
 
+void Game::getWindowSize()
+{
+	//fix x/y offsets to header file.
+	gameWindowWidth = xoffset + (gridSizeX * 32) + xoffset;
+	gameWindowHeight = yoffset + (gridSizeY * 32) + xoffset;
+}
+
 void Game::SelectRenderer(SDL_Renderer &renderer)
 {
 	gameRenderer = &renderer;
@@ -172,11 +179,7 @@ void Game::LoadObjects()
 
 void Game::RunRenderer()
 {
-	
-	// X and Y offset for the grid
-	int xoffset = 50;
-	int yoffset = 85;
-	
+
 	//mine visual state
 	SDL_Rect CellValues[13];
 	for (int i = 0; i < SDL_arraysize(CellValues); i++)
@@ -236,7 +239,7 @@ void Game::RunRenderer()
 				//initial render should look like this.
 				MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[0]);
 			}
-			
+
 			if (fail)
 			{
 				if (gameBoard[i][j].CheckMine())
@@ -260,46 +263,46 @@ void Game::RunRenderer()
 					MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[11]);
 				}
 				else
-				{
+			{
 					MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[1]);
 				}
 
 				switch (gameBoard[i][j].ReadMineCount())
 				{
-				case 1:
-					MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[2]);
-					break;
+					case 1:
+						MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[2]);
+						break;
 
-				case 2:
-					MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[3]);
-					break;
+					case 2:
+						MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[3]);
+						break;
 
-				case 3:
-					MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[4]);
-					break;
+					case 3:
+						MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[4]);
+						break;
 
-				case 4:
-					MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[5]);
-					break;
+					case 4:
+						MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[5]);
+						break;
 
-				case 5:
-					MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[6]);
-					break;
+					case 5:
+						MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[6]);
+						break;
 
-				case 6:
-					MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[7]);
-					break;
+					case 6:
+						MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[7]);
+						break;
 
-				case 7:
-					MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[8]);
-					break;
+					case 7:
+						MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[8]);
+						break;
 
-				case 8:
-					MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[9]);
-					break;
+					case 8:
+						MineSkin.render(gameBoard[i][j].CellLocation.x, gameBoard[i][j].CellLocation.y, &CellValues[9]);
+						break;
 
-				default:
-					break;
+					default:
+						break;
 				}
 			}
 
@@ -339,7 +342,11 @@ void Game::RunEvents()
 
 		if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_BUTTON(SDL_BUTTON_LEFT) && gameEvent->button.state == SDL_PRESSED)
 		{
+			//if not opened or flagged, open the cell
 			OpenCells();
+			//else chord the cell if conditions are met.
+			ChordCells();
+
 
 			if (mouseX > NewGameButtonLoc.x && mouseX < NewGameButtonLoc.w + NewGameButtonLoc.x)
 			{
@@ -364,10 +371,8 @@ void Game::RunEvents()
 	{
 		//flag if not opened.
 		FlagCells();
-
-		//else Chord if opened
-		ChordCells();
-
+		//if opened, quick/easy flag.
+		QuickFlag();
 	}
 
 }
@@ -454,7 +459,7 @@ void Game::FlagCells()
 								FlaggedCount--;
 							}
 							else
-							{
+						{
 								FlaggedCount++;
 							}
 						}
@@ -465,6 +470,141 @@ void Game::FlagCells()
 	}
 }
 
+void Game::QuickFlag()
+{
+	int flagValid = 0;
+	for (int i = 0; i < gridSizeX; i++)
+	{
+		for (int j = 0; j < gridSizeY; j++)
+		{
+			if (fail == false)
+			{
+				if (mouseX > gameBoard[i][j].CellLocation.x && mouseX < gameBoard[i][j].CellLocation.x + gameBoard[i][j].CellLocation.w)
+				{
+					if (mouseY > gameBoard[i][j].CellLocation.y && mouseY < gameBoard[i][j].CellLocation.y + gameBoard[i][j].CellLocation.h)
+					{
+						//check if the cell is opened first
+						if (gameBoard[i][j].checkOpened())
+						{
+							//check which tiles are not opened.
+							if (i > 0 && j > 0)
+							{
+								if (!gameBoard[i-1][j-1].checkOpened())
+									flagValid++;
+							}
+							if (i > 0)
+							{
+								if (!gameBoard[i-1][j].checkOpened())
+									flagValid++;
+							}
+							if (i > 0 && j < gridSizeY - 1)
+							{
+								if (!gameBoard[i-1][j+1].checkOpened())
+									flagValid++;
+							}
+							if (j > 0)
+							{
+								if (!gameBoard[i][j-1].checkOpened())
+									flagValid++;
+							}
+							if (j < gridSizeY - 1)
+							{
+								if (!gameBoard[i][j+1].checkOpened())
+									flagValid++;
+							}
+							if (i < gridSizeX - 1 && j > 0)
+							{
+								if (!gameBoard[i+1][j-1].checkOpened())
+									flagValid++;
+							}
+							if (i < gridSizeX - 1)
+							{
+								if (!gameBoard[i+1][j].checkOpened())
+									flagValid++;
+							}
+							if (i < gridSizeX - 1 && j < gridSizeY - 1)
+							{
+								if (!gameBoard[i+1][j+1].checkOpened())
+									flagValid++;
+							}
+
+
+							//compare the cell value with the value of valid cells to flag.
+							if (flagValid == gameBoard[i][j].ReadMineCount())
+							{
+								//run through the unopened cells and flag them.
+								if (i > 0 && j > 0)
+								{
+									if (!gameBoard[i-1][j-1].checkOpened() && !gameBoard[i-1][j-1].checkFlagged())
+									{
+										gameBoard[i-1][j-1].toggleFlagged();
+										FlaggedCount++;
+									}
+								}
+								if (i > 0)
+								{
+									if (!gameBoard[i-1][j].checkOpened() && !gameBoard[i-1][j].checkFlagged())
+									{
+										gameBoard[i-1][j].toggleFlagged();
+										FlaggedCount++;
+									}
+								}
+								if (i > 0 && j < gridSizeY - 1)
+								{
+									if (!gameBoard[i-1][j+1].checkOpened() && !gameBoard[i-1][j+1].checkFlagged())
+									{
+										gameBoard[i-1][j+1].toggleFlagged();
+										FlaggedCount++;
+									}
+								}
+								if (j > 0)
+								{
+									if (!gameBoard[i][j-1].checkOpened() && !gameBoard[i][j-1].checkFlagged())
+									{
+										gameBoard[i][j-1].toggleFlagged();
+										FlaggedCount++;
+									}
+								}
+								if (j < gridSizeY - 1)
+								{
+									if (!gameBoard[i][j+1].checkOpened() && !gameBoard[i][j+1].checkFlagged())
+									{
+										gameBoard[i][j+1].toggleFlagged();
+										FlaggedCount++;
+									}
+								}
+								if (i < gridSizeX - 1 && j > 0)
+								{
+									if (!gameBoard[i+1][j-1].checkOpened() && !gameBoard[i+1][j-1].checkFlagged())
+									{
+										gameBoard[i+1][j-1].toggleFlagged();
+										FlaggedCount++;
+									}
+								}
+								if (i < gridSizeX - 1)
+								{
+									if (!gameBoard[i+1][j].checkOpened() && !gameBoard[i+1][j].checkFlagged())
+									{
+										gameBoard[i+1][j].toggleFlagged();
+										FlaggedCount++;
+									}
+								}
+								if (i < gridSizeX - 1 && j < gridSizeY - 1)
+								{
+									if (!gameBoard[i+1][j+1].checkOpened() && !gameBoard[i+1][j+1].checkFlagged())
+									{
+										gameBoard[i+1][j+1].toggleFlagged();
+										FlaggedCount++;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
 
 void Game::ChordCells()
 {
@@ -498,7 +638,7 @@ void Game::ChordCells()
 							if (j > 0)
 								if (gameBoard[i][j - 1].checkFlagged())
 									flaggedCells++;
-							
+
 							if (j < gridSizeY - 1)
 								if (gameBoard[i][j + 1].checkFlagged())
 									flaggedCells++;
@@ -532,7 +672,7 @@ void Game::ChordCells()
 								if (j > 0)
 									if (!gameBoard[i][j - 1].checkFlagged() && !gameBoard[i][j - 1].checkOpened())
 										gameBoard[i][j - 1].setOpened();
-								
+
 								if (j < gridSizeY - 1)
 									if (!gameBoard[i][j + 1].checkFlagged() && !gameBoard[i][j + 1].checkOpened())
 										gameBoard[i][j + 1].setOpened();
@@ -574,27 +714,55 @@ void Game::FailureCheck()
 
 void Game::Success()
 {
-	
+	int emptyCells = 0;
 	int CountedCorrect = 0;
 	for (int i = 0; i < gridSizeX; i++)
 	{
 		for (int j = 0; j < gridSizeY; j++)
 		{
+			//flagged rule
 			if (gameBoard[i][j].checkFlagged() && gameBoard[i][j].CheckMine())
 			{
 				CountedCorrect++;
 			}
+			//check for opened cells so that NF rule can apply.
+			if (!gameBoard[i][j].checkOpened())
+				emptyCells++;
 		}
 	}
 	//Overflag Protection
 	if ((TotalMines - FlaggedCount) < 0)
 		return;
-	if (CountedCorrect == TotalMines && win == false)
+	// Standard rules - All flags have been placed in the correct place.
+	if (CountedCorrect == TotalMines && !win)
 	{
 		gameTime.pause();
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "CONGRATULATIONS!", "YOU WON!", NULL);
-
 		win = true;
+	}
+	// No Flag (NF) rule
+	if (emptyCells == TotalMines && !win)
+	{
+		gameTime.pause();
+		win = true;
+
+		for (int i = 0; i < gridSizeX; i++)
+		{
+			for (int j = 0; j < gridSizeY; j++)
+			{
+				if (!gameBoard[i][j].checkOpened() && !gameBoard[i][j].checkFlagged())
+				{
+					gameBoard[i][j].toggleFlagged();
+					FlaggedCount++;
+				}
+				if (!gameBoard[i][j].checkOpened() && !gameBoard[i][j].CheckMine())
+					gameBoard[i][j].setOpened();
+			}
+		}
+	}
+	if (win && !winlock)
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "CONGRATULATIONS!", "YOU WON!", NULL);
+		winlock = true;
 	}
 }
 
@@ -641,7 +809,9 @@ void Game::ResetGame()
 	SetDifficulty();
 	fail = false;
 	win = false;
+	winlock = false;
 	firstClick = true;
+	gameTime.stop();
 	FlaggedCount = 0;
 }
 
@@ -649,25 +819,25 @@ void Game::SetDifficulty()
 {
 	switch (gameDifficulty)
 	{
-	case EASY:
-		gridSizeX = 8;
-		gridSizeY = 8;
-		TotalMines = 10;
-		break;
+		case EASY:
+			gridSizeX = 8;
+			gridSizeY = 8;
+			TotalMines = 10;
+			break;
 
-	case NORMAL:
-		gridSizeX = 16;
-		gridSizeY = 16;
-		TotalMines = 40;
-		break;
+		case NORMAL:
+			gridSizeX = 16;
+			gridSizeY = 16;
+			TotalMines = 40;
+			break;
 
-	case HARD:
-		gridSizeX = 30;
-		gridSizeY = 16;
-		TotalMines = 99;
-		break;
-	default:
-		break;
+		case HARD:
+			gridSizeX = 30;
+			gridSizeY = 16;
+			TotalMines = 99;
+			break;
+		default:
+			break;
 	}
 
 	GenerateBoard();
@@ -675,7 +845,6 @@ void Game::SetDifficulty()
 
 Game::Game()
 {
-	//note these are initial Expert grid sizes - Make dynamic later.
 	gridSizeX = 0;
 	gridSizeY = 0;
 	TotalMines = 0;
@@ -684,6 +853,7 @@ Game::Game()
 	//game specific variables
 	fail = false;
 	win = false;
+	winlock = false;
 	firstClick = true;
 	optionsSelected = false;
 	gameDifficulty = Difficulty::EASY;
@@ -693,9 +863,9 @@ Game::Game()
 	gameEvent = nullptr;
 
 	//UI
-	NewGameButtonLoc = { 185, 20, 48, 32 };
-	OptionsButtonLoc = { 240, 20, 64, 32 };
-	UILoc = { 50, 10, 128, 64 };
+	NewGameButtonLoc = { xoffset + 150, 20, 48, 32 };
+	OptionsButtonLoc = { xoffset + 200, 20, 64, 32 };
+	UILoc = { xoffset, 10, 128, 64 };
 
 	gameFont = nullptr;
 }
@@ -711,6 +881,7 @@ Game::~Game()
 	NewGameButtonLoc = { 0, 0, 0, 0 };
 	OptionsButtonLoc = { 0, 0, 0, 0 };
 	gameFont = nullptr;
+	winlock = false;
 }
 
 Cell::Cell()
@@ -770,7 +941,7 @@ void Cell::toggleFlagged()
 
 	}
 	else
-	{
+{
 		isFlagged = false;
 
 	}

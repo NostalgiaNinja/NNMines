@@ -11,14 +11,20 @@
 
 SDL_Window* mainWindow = nullptr;
 SDL_Renderer* mainRenderer = nullptr;
+int scrWidth = 0;
+int scrHeight = 0;
 
-void init(int scrWidth, int scrHeight)
+SDL_Surface* icon = IMG_Load("icon1.ico");
+
+void init()
 {
 	//init SDL Subsystem
 	SDL_Init(SDL_INIT_VIDEO);
 
 	//init Window system
 	mainWindow = SDL_CreateWindow("NN's Minesweeper Clone", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scrWidth, scrHeight, SDL_WINDOW_SHOWN | SDL_RENDERER_PRESENTVSYNC);
+
+	SDL_SetWindowIcon(mainWindow, icon);
 
 	//init Renderer
 	mainRenderer = SDL_CreateRenderer(mainWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -47,16 +53,16 @@ int main(int args, char* argv[])
 	//pre-initialization (game-specific)
 	APPSTATE state(APPSTATE::INIT);
 
-	//figure out where resolution should be delt with
-	int screenWidth = 1050;
-	int screenHeight = 630;
+	//figure out where resolution should be delt with - this is the initial size of the game before adjustments.
+	scrWidth = 1280;
+	scrHeight = 720;
 	
 	//initialize game and event system
 	Game game;
 	SDL_Event ev;
 
 	//initialize window
-	init(screenWidth, screenHeight);
+	init();
 	
 	//Modify state machine to handle application state.
 	state = APPSTATE::GAME;
@@ -69,6 +75,10 @@ int main(int args, char* argv[])
 	game.LoadObjects();
 	game.SetDifficulty();
 
+	//resize window to appropriate size
+	game.getWindowSize();
+	SDL_SetWindowSize(mainWindow, game.gameWindowWidth, game.gameWindowHeight);
+
 	Options options;
 
 	options.SelectRenderer(*mainRenderer);
@@ -76,7 +86,7 @@ int main(int args, char* argv[])
 
 	options.LoadObjects();
 
-	SDL_Rect frameDebugger = { 20, screenHeight - 50, 32, 32 };
+	SDL_Rect frameDebugger = { 20, scrHeight - 50, 32, 32 };
 
 	while (state != APPSTATE::EXIT)
 	{
@@ -136,6 +146,11 @@ int main(int args, char* argv[])
 				game.gameDifficulty = Difficulty::HARD;
 			}
 			game.ResetGame();
+
+			//resize window to appropriate size
+			game.getWindowSize();
+			SDL_SetWindowSize(mainWindow, game.gameWindowWidth, game.gameWindowHeight);
+
 			options.done = false;
 		}
 

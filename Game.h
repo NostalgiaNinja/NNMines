@@ -63,13 +63,20 @@ public:
 	void OpenCells();
 	void FlagCells();
 	void ChordCells();
+	void QuickFlag();
 	void AutoFillCheck();
 	void ResetGame();
 	void FailureCheck();
 	void Success();
 
+	//Options
 	bool optionsSelected;
 	Difficulty gameDifficulty;
+
+	//get window size information for dynamic resizing in Main.cpp
+	int gameWindowWidth;
+	int gameWindowHeight;
+	void getWindowSize();
 
 private:
 	//Minesweeper board
@@ -84,9 +91,8 @@ private:
 	//game specific variables
 	bool fail;
 	bool win;
+	bool winlock; //locks win state and prevents an infinite loop.
 	bool firstClick;
-
-
 
 	//Required stuff to get renderer and game functions going.
 	//gameRenderer: Which renderer to render to? getRenderer will ask where to output this data on initialization.
@@ -110,7 +116,11 @@ private:
 	Sprite OptionsPressed;
 	Sprite OptionsHover;
 	Sprite UI;
-	
+
+	//Grid offsets
+	int xoffset = 32;
+	int yoffset = 85;
+
 	//Font - OFL-Licensed Press Start 2P
 	TTF_Font* gameFont;
 	Texture fntMinesLeft;
